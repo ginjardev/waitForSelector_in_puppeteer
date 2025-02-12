@@ -6,7 +6,7 @@ export async function remoteBrowserPage() {
         'browserName': 'Chrome',
         'browserVersion': 'latest',
         'LT:Options': {
-            'platform': 'Windows 10',
+            'platform': 'Windows 11',
             'build': 'puppeteer-build-2',
             'name': 'Second Puppeteer test',
             'resolution': '1366x768',

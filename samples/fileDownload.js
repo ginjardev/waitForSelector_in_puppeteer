@@ -1,6 +1,6 @@
 'use strict';
 
-import { remoteBrowserPage } from './connector.js';
+import { remoteBrowserPage } from '../connector.js';
 
 (async () => {
   try {
@@ -19,7 +19,7 @@ import { remoteBrowserPage } from './connector.js';
 
     console.log('Click file download link');
     await page.locator('#link-to-download ').click();
-    console.log('File download complete')
+    console.log('File download completed')
     // set test status to passed
     await page.evaluate(_ => { }, `lambdatest_action: ${JSON.stringify({ action: 'setTestStatus', arguments: { status: 'passed', remark: "Test Passed" } })}`);
 
