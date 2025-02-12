@@ -1,6 +1,7 @@
 'use strict';
 
 import { remoteBrowserPage } from '../connector.js';
+
 // list of image classes 
 const imageSelectors = [
   '.s__column img',
