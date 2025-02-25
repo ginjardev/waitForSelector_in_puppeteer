@@ -1,14 +1,14 @@
 'use strict';
 import { connect } from 'puppeteer';
 
-export async function remoteBrowserPage() {
+async function createBrowser() {
     const capabilities = {
         'browserName': 'Chrome',
         'browserVersion': 'latest',
         'LT:Options': {
             'platform': 'Windows 11',
             'build': 'puppeteer-build-2',
-            'name': 'Second Puppeteer test',
+            'name': 'Puppeteer waitForSelector',
             'resolution': '1366x768',
             'user': process.env.LT_USERNAME || "Your Username",
             'accessKey': process.env.LT_ACCESS_KEY || "Your Access Key",
@@ -17,13 +17,25 @@ export async function remoteBrowserPage() {
     };
 
     let browser;
-    let page;
-
     try {
         browser = await connect({
             browserWSEndpoint:
                 `wss://cdp.lambdatest.com/puppeteer?capabilities=${encodeURIComponent(JSON.stringify(capabilities))}`,
         });
+
+    } catch (e) {
+        console.log("Error - ", e);
+    }
+
+    return browser;
+}
+
+
+async function createPage() {
+
+    let page;
+
+    try {
 
         page = await browser.newPage();
         await page.setViewport({
@@ -33,12 +45,30 @@ export async function remoteBrowserPage() {
         });
 
     } catch (e) {
-        if (browser) {
-            const page = await browser.newPage();
-            await page.evaluate(_ => { }, `lambdatest_action: ${JSON.stringify({ action: 'setTestStatus', arguments: { status: 'failed', remark: "Test Failed" } })}`)
-            await browser.close();
-        }
         console.log("Error - ", e);
     }
-    return {page, browser};
+
+    return page;
 }
+
+
+export async function closeBrowser() {
+
+    try {
+        // set test status to passed
+        await page.evaluate(_ => { }, `lambdatest_action: ${JSON.stringify({ action: 'setTestStatus', arguments: { status: 'passed', remark: "Test Passed" } })}`);
+        await browser.close();
+
+    } catch (e) {
+        // set test status to failed
+        await page.evaluate(_ => { }, `lambdatest_action: ${JSON.stringify({ action: 'setTestStatus', arguments: { status: 'failed', remark: "Test Failed" } })}`);
+        console.log("Error - ", e);
+        browser.close();
+    }
+
+}
+
+let browser = await createBrowser();
+let page = await createPage();
+
+export { page, browser };
