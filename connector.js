@@ -2,6 +2,7 @@
 import { connect } from 'puppeteer';
 
 async function createBrowser() {
+    // lambdatest capabilities object
     const capabilities = {
         'browserName': 'Chrome',
         'browserVersion': 'latest',
@@ -18,6 +19,7 @@ async function createBrowser() {
 
     let browser;
     try {
+        // create browser instance
         browser = await connect({
             browserWSEndpoint:
                 `wss://cdp.lambdatest.com/puppeteer?capabilities=${encodeURIComponent(JSON.stringify(capabilities))}`,
@@ -36,8 +38,10 @@ async function createPage() {
     let page;
 
     try {
-
+        // create page instance
         page = await browser.newPage();
+
+        // set viewport
         await page.setViewport({
             width: 1024,
             height: 768,

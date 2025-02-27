@@ -13,12 +13,16 @@ import { page, closeBrowser} from '../connector.js';
     await page.locator('button#create').click();
 
     // // wait for download link to become visible
-    await page.waitForSelector('#link-to-download ');
+    await page.waitForSelector('#link-to-download');
 
     console.log('Click file download link');
     await page.locator('#link-to-download ').click();
-    console.log('File download completed')
+    console.log('File download completed');
 
+    await Promise.race([
+      await page.waitForSelector('button#create'),
+      await page.waitForSelector('#link-to-download')
+    ]);
 
     // close browser
     closeBrowser();
